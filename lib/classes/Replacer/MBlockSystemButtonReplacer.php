@@ -55,6 +55,7 @@ class MBlockSystemButtonReplacer
     public static function replaceSystemButtons(MBlockItem $item, $count)
     {
         // set phpquery document
+
         $document = phpQuery::newDocumentHTML($item->getForm());
         $item->addPayload('count-id', $count);
 
@@ -92,6 +93,14 @@ class MBlockSystemButtonReplacer
                             if (strpos($id, 'REX_LINKLIST_') !== false) {
                                 // linklist button
                                 self::processLinkList($document, $match, $item);
+                            }
+                            if (strpos($id, 'yform_MANAGER_DATANAME_') !== false) {
+                                // REX_YFORM_TABLE_DATA
+                                self::processYformDataName($document, $match, $item);
+                            }
+                            if (strpos($id, 'yform_MANAGER_DATA_') !== false) {
+                                // REX_YFORM_TABLE_DATA
+                                self::processYformData($document, $match, $item);
                             }
                         }
                     }
@@ -276,6 +285,44 @@ class MBlockSystemButtonReplacer
             self::replaceOnClick($document, $item, 'REXLinklist(', '(', ',');
             // change click id
             self::replaceOnClick($document, $item, 'deleteREXLinklist(', '(', ')');
+        }
+    }
+
+
+    /**
+     * @param phpQueryObject $document
+     * @param DOMElement $dom
+     * @param MBlockItem $item
+     * @author Kreatif GmbH
+     */
+    protected static function processYformDataName(phpQueryObject $document, DOMElement $dom, MBlockItem $item)
+    {
+        // set system name
+        $item->setSystemName('yform_MANAGER_DATANAME');
+        // has children ?
+        if ($dom->hasChildNodes()) {
+            // replace name first child is input
+            self::replaceName($dom->firstChild, $item, 'yform_MANAGER_DATANAME');
+            // change for id
+            self::replaceId($dom->firstChild, $item);
+            // change onclick id
+            self::replaceOnClick($document, $item, 'yform_manager_openDatalist(', '(', ',');
+            self::replaceOnClick($document, $item, 'yform_manager_deleteDatalist(', '(', ',');
+        }
+    }
+
+    /**
+     * @param phpQueryObject $document
+     * @param DOMElement $dom
+     * @param MBlockItem $item
+     * @author Kreatif GmbH
+     */
+    protected static function processYformData(phpQueryObject $document, DOMElement $dom, MBlockItem $item)
+    {
+        // set system name
+        $item->setSystemName('yform_MANAGER_DATA');
+        if ($dom->hasChildNodes()) {
+            self::replaceId($dom->childNodes[1], $item);
         }
     }
 

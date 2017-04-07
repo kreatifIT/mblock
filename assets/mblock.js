@@ -15,7 +15,7 @@ var mblock_module = (function () {
         lastAction: ''
     };
     var mod = {}
-    
+
     mod.affectedItem = {};
 
     // Register a callback
@@ -218,6 +218,29 @@ function mblock_reindex(element) {
                     });
                 }
             }
+
+            // input rex button
+            if ($(this).prop("nodeName") == 'INPUT' && $(this).attr('id') && (
+                    $(this).attr('id').indexOf("yform_MANAGER_DATANAME_") >= 0
+                )) {
+                if ($(this).attr('type') != 'hidden') {
+                    if ($(this).parent().data('eindex')) {
+                        eindex = $(this).parent().data('eindex');
+                    }
+                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
+
+                    if ($(this).next().attr('type') == 'hidden') {
+                        $(this).next().attr('id', $(this).next().attr('id').replace(/\d+/, sindex + '00' + eindex));
+                    }
+
+                    // button
+                    $(this).parent().find('a.btn-popup').each(function () {
+                        if ($(this).attr('onclick')) {
+                            $(this).attr('onclick', $(this).attr('onclick').replace(/\(\d+/, '(' + sindex + '00' + eindex));
+                        }
+                    });
+                }
+            }
         });
 
         var mselect = $(this).find('.multiple-select');
@@ -231,7 +254,7 @@ function mblock_reindex(element) {
             customlink = $(this);
             $(this).find('input').each(function () {
                 if ($(this).attr('id')) {
-                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
+                    // $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
                 }
             });
             $(this).find('a.btn-popup').each(function () {
@@ -320,7 +343,7 @@ function mblock_reindex(element) {
     }
     // if not removing, sets "for" attribute for most elements to make them work properly
     if(mblock_module.lastAction != 'remove_item') {
-	    mblock_replace_for(element);
+        mblock_replace_for(element);
     }
 
     mblock_module.executeRegisteredCallbacks('reindex_end');
@@ -337,7 +360,9 @@ function mblock_replace_for(element) {
                 if (!(id.indexOf("REX_MEDIA") >= 0 ||
                     id.indexOf("REX_LINK") >= 0 ||
                     id.indexOf("redactor") >= 0 ||
-                    id.indexOf("markitup") >= 0)
+                    id.indexOf("markitup") >= 0 ||
+                    id.indexOf("yform_MANAGER_DATA") >= 0 ||
+                    id.indexOf("yform_MANAGER_DATANAME") >= 0)
                 ) {
                     var label = mblock.find('label[for="' + id + '"]');
                     var name = el.attr('name').replace(/(\[|\])/gm, '');
@@ -401,8 +426,8 @@ function mblock_add_item(element, item) {
         mblock_set_unique_id(iClone, true);
         // set count
         mblock_set_count(element, item);
-		// set last user action
-		mblock_module.lastAction = 'add_item';
+        // set last user action
+        mblock_module.lastAction = 'add_item';
         // reinit
         mblock_init_sort(element);
         // scroll to item
@@ -463,8 +488,8 @@ function mblock_remove_item(element, item) {
         mblock_module.affectedItem = item;
         // remove element
         item.remove();
-		// set last user action
-		mblock_module.lastAction = 'remove_item';
+        // set last user action
+        mblock_module.lastAction = 'remove_item';
         // reinit
         mblock_init_sort(element);
         // scroll to item
@@ -481,13 +506,13 @@ function mblock_moveup(element, item) {
     setTimeout(function () {
         prev.removeClass('mblock_animate').css({'z-index': '', 'top': '', 'position': ''});
         item.removeClass('mblock_animate').css({'z-index': '', 'top': '', 'position': ''});
-        
+
         // set currently affected item
         mblock_module.affectedItem = item;
-        
+
         item.insertBefore(prev);
-		// set last user action
-		mblock_module.lastAction = 'moveup';
+        // set last user action
+        mblock_module.lastAction = 'moveup';
         mblock_reindex(element);
     }, 150);
 }
@@ -507,8 +532,8 @@ function mblock_movedown(element, item) {
         mblock_module.affectedItem = item;
 
         item.insertAfter(next);
-		// set last user action
-		mblock_module.lastAction = 'movedown';
+        // set last user action
+        mblock_module.lastAction = 'movedown';
         mblock_reindex(element);
     }, 150);
 }
