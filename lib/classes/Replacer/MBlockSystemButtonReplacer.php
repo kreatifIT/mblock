@@ -100,11 +100,11 @@ class MBlockSystemButtonReplacer
                             }
                             if (strpos($id, 'yform_MANAGER_DATANAME_') !== false) {
                                 // REX_YFORM_TABLE_DATA
-                                self::processYformDataName($document, $match, $item);
+                                self::processYformDataName($match, $item);
                             }
                             if (strpos($id, 'yform_MANAGER_DATA_') !== false) {
                                 // REX_YFORM_TABLE_DATA
-                                self::processYformData($document, $match, $item);
+                                self::processYformData($match, $item);
                             }
                         }
                     }
@@ -317,7 +317,7 @@ class MBlockSystemButtonReplacer
      * @param MBlockItem $item
      * @author Kreatif GmbH
      */
-    protected static function processYformDataName(phpQueryObject $document, DOMElement $dom, MBlockItem $item)
+    protected static function processYformDataName(DOMElement $dom, MBlockItem $item)
     {
         // set system name
         $item->setSystemName('yform_MANAGER_DATANAME');
@@ -328,8 +328,8 @@ class MBlockSystemButtonReplacer
             // change for id
             self::replaceId($dom->firstChild, $item);
             // change onclick id
-            self::replaceOnClick($document, $item, 'yform_manager_openDatalist(', '(', ',');
-            self::replaceOnClick($document, $item, 'yform_manager_deleteDatalist(', '(', ',');
+            self::replaceOnClick($dom, $item, 'yform_manager_openDatalist(', '(', ',');
+            self::replaceOnClick($dom, $item, 'yform_manager_deleteDatalist(', '(', ',');
         }
     }
 
@@ -339,7 +339,7 @@ class MBlockSystemButtonReplacer
      * @param MBlockItem $item
      * @author Kreatif GmbH
      */
-    protected static function processYformData(phpQueryObject $document, DOMElement $dom, MBlockItem $item)
+    protected static function processYformData(DOMElement $dom, MBlockItem $item)
     {
         // set system name
         $item->setSystemName('yform_MANAGER_DATA');
