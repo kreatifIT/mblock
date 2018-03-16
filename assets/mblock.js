@@ -10,11 +10,12 @@ $(function () {
 
 var mblock_module = (function () {
     var callbacks = {
+        remove_item_start: [],
         add_item_start: [],
         reindex_end: [],
         lastAction: ''
     };
-    var mod = {}
+    var mod = {};
 
     mod.affectedItem = {};
 
@@ -24,7 +25,7 @@ var mblock_module = (function () {
     // @output void
     mod.registerCallback = function (evnt, f) {
         callbacks[evnt].push(f);
-    }
+    };
 
     // @input evnt string name of the event
     // @output []function
@@ -35,7 +36,7 @@ var mblock_module = (function () {
         else {
             return callbacks[evnt];
         }
-    }
+    };
 
     // @input evnt string name of the event
     // @output void
@@ -44,7 +45,7 @@ var mblock_module = (function () {
         for (var i = 0; i < list.length; i++) {
             list[i](evnt == 'reindex_end' && mod.affectedItem);
         }
-    }
+    };
 
     return mod;
 })();
@@ -52,10 +53,17 @@ var mblock_module = (function () {
 function mblock_init() {
     var mblock = $('.mblock_wrapper');
     // init by siteload
-    if ($('#REX_FORM').length && mblock.length) {
+    if (mblock.length) {
         mblock.each(function () {
-            mblock_sort($(this));
-            mblock_set_unique_id($(this), false);
+            if (!$(this).data('mblock_run')) {
+                $(this).data('mblock_run', 1);
+                mblock_sort($(this));
+                mblock_set_unique_id($(this), false);
+
+                if ($(this).data('min') == 1 && $(this).data('max') == 1) {
+                    $(this).addClass('hide_removeadded').addClass('hide_sorthandle');
+                }
+            }
         });
     }
 }
@@ -82,8 +90,10 @@ function mblock_remove(element) {
 
     if (finded.length == 1) {
         finded.find('.removeme').prop('disabled', true);
+        finded.find('.removeme').attr('data-disabled', true);
     } else {
         finded.find('.removeme').prop('disabled', false);
+        finded.find('.removeme').attr('data-disabled', false);
     }
 
     // has data?
@@ -125,7 +135,9 @@ function mblock_sort_it(element) {
     element.mblock_sortable({
         handle: '.sorthandle',
         animation: 150,
-        onEnd: function () {
+        onEnd: function (event) {
+            mblock_module.lastAction = 'sort';
+            mblock_module.affectedItem = $(event.item);
             mblock_reindex(element);
         }
     });
@@ -134,10 +146,12 @@ function mblock_sort_it(element) {
 function mblock_reindex(element) {
 
     var initredactor = false,
-        initmarkitup = false;
+        initmarkitup = false,
+        mblock_count = element.data('mblock_count');
 
     element.find('> div').each(function (index) {
         // find input elements
+        $(this).attr('data-mblock_index', (index + 1));
         $(this).find('input,textarea,select,button').each(function (key) {
             var attr = $(this).attr('name');
             eindex = key + 1;
@@ -171,9 +185,9 @@ function mblock_reindex(element) {
                     $(this).attr('id').indexOf("REX_LINKLIST_SELECT_") >= 0
                 )) {
                 $(this).parent().data('eindex', eindex);
-                $(this).attr('id', $(this).attr('id').replace(/_\d+/, '_' + sindex + '00' + eindex));
+                $(this).attr('id', $(this).attr('id').replace(/_\d+/, '_' + sindex + '' + mblock_count +   '00' + eindex));
                 if ($(this).attr('name') != undefined) {
-                    $(this).attr('name', $(this).attr('name').replace(/_\d+/, '_' + sindex + '00' + eindex));
+                    $(this).attr('name', $(this).attr('name').replace(/_\d+/, '_' + sindex + '' + mblock_count + '00' + eindex));
                 }
             }
 
@@ -185,12 +199,12 @@ function mblock_reindex(element) {
                 if ($(this).parent().data('eindex')) {
                     eindex = $(this).parent().data('eindex');
                 }
-                $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
+                $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '' + mblock_count + '00' + eindex));
 
                 // button
                 $(this).parent().find('a.btn-popup').each(function () {
-                    $(this).attr('onclick', $(this).attr('onclick').replace(/\(\d+/, '(' + sindex + '00' + eindex));
-                    $(this).attr('onclick', $(this).attr('onclick').replace(/_\d+/, '_' + sindex + '00' + eindex));
+                    $(this).attr('onclick', $(this).attr('onclick').replace(/\(\d+/, '(' + sindex + '' + mblock_count + '00' + eindex));
+                    $(this).attr('onclick', $(this).attr('onclick').replace(/_\d+/, '_' + sindex + '' + mblock_count + '00' + eindex));
                 });
             }
 
@@ -203,17 +217,17 @@ function mblock_reindex(element) {
                     if ($(this).parent().data('eindex')) {
                         eindex = $(this).parent().data('eindex');
                     }
-                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
+                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '' + mblock_count + '00' + eindex));
 
                     if ($(this).next().attr('type') == 'hidden') {
-                        $(this).next().attr('id', $(this).next().attr('id').replace(/\d+/, sindex + '00' + eindex));
+                        $(this).next().attr('id', $(this).next().attr('id').replace(/\d+/, sindex + '' + mblock_count + '00' + eindex));
                     }
 
                     // button
                     $(this).parent().find('a.btn-popup').each(function () {
                         if ($(this).attr('onclick')) {
-                            $(this).attr('onclick', $(this).attr('onclick').replace(/\(\d+/, '(' + sindex + '00' + eindex));
-                            $(this).attr('onclick', $(this).attr('onclick').replace(/_\d+/, '_' + sindex + '00' + eindex));
+                            $(this).attr('onclick', $(this).attr('onclick').replace(/\(\d+/, '(' + sindex + '' + mblock_count + '00' + eindex));
+                            $(this).attr('onclick', $(this).attr('onclick').replace(/_\d+/, '_' + sindex + '' + mblock_count + '00' + eindex));
                         }
                     });
                 }
@@ -243,10 +257,48 @@ function mblock_reindex(element) {
             }
         });
 
-        var mselect = $(this).find('.multiple-select');
-        if (mselect.length > 0) {
-            mform_multiple_select(mselect);
-        }
+        $(this).find('a[data-toggle="collapse"]').each(function (key) {
+            eindex = key + 1;
+            sindex = index + 1;
+            togglecollase = $(this);
+            if (!$(this).attr('data-ignore-mblock')) {
+                href = $(this).attr('data-target');
+                container = togglecollase.parent().find(href);
+                group = togglecollase.parent().parent().parent().find('.panel-group');
+                nexit = container.attr('id').replace(/_\d+/, '_' + sindex + '' + mblock_count + '00' + eindex);
+
+                container.attr('id', nexit);
+                togglecollase.attr('data-target', '#' + nexit);
+
+                if (group.length) {
+                    parentit = group.attr('id').replace(/_\d+/, '_' + sindex + '' + mblock_count + '00');
+                    group.attr('id', parentit);
+                    togglecollase.attr('data-parent', '#' + parentit);
+                }
+            }
+        });
+
+        $(this).find('a[data-toggle="tab"]').each(function (key) {
+            eindex = key + 1;
+            sindex = index + 1;
+            toggletab = $(this);
+            href = $(this).attr('href');
+            container = toggletab.parent().parent().parent().find('.tab-content ' + href);
+            nexit = container.attr('id').replace(/_\d+/, '_' + sindex + '' + mblock_count + '00' + eindex);
+
+            container.attr('id', nexit);
+            toggletab.attr('href', '#' + nexit);
+
+            toggletab.unbind().bind("shown.bs.tab", function (e) {
+                var id = $(e.target).attr("href");
+                localStorage.setItem('selectedTab', id)
+            });
+
+            var selectedTab = localStorage.getItem('selectedTab');
+            if (selectedTab != null) {
+                $('a[data-toggle="tab"][href="' + selectedTab + '"]').tab('show');
+            }
+        });
 
         $(this).find('.custom-link').each(function (key) {
             eindex = key + 1;
@@ -254,15 +306,15 @@ function mblock_reindex(element) {
             customlink = $(this);
             $(this).find('input').each(function () {
                 if ($(this).attr('id')) {
-                    // $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
+                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '' + mblock_count + '00' + eindex));
                 }
             });
             $(this).find('a.btn-popup').each(function () {
                 if ($(this).attr('id')) {
-                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
+                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '' + mblock_count + '00' + eindex));
                 }
             });
-            customlink.attr('data-id', sindex + '00' + eindex);
+            customlink.attr('data-id', sindex + '' + mblock_count + '00' + eindex);
             if (typeof mform_custom_link === 'function') mform_custom_link(customlink);
         });
 
@@ -272,7 +324,7 @@ function mblock_reindex(element) {
             sindex = index + 1;
             $(this).find('textarea').each(function () {
                 if ($(this).attr('id')) {
-                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
+                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '' + mblock_count + '00' + eindex));
                 }
             });
         });
@@ -283,7 +335,7 @@ function mblock_reindex(element) {
             sindex = index + 1;
             $(this).find('textarea').each(function () {
                 if ($(this).attr('id')) {
-                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
+                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '' + mblock_count + '00' + eindex));
                 }
             })
         });
@@ -329,6 +381,7 @@ function mblock_reindex(element) {
             });
             if (typeof area === 'object') {
                 if (area.length) {
+                    area.removeClass('markItUpEditor').removeClass('markitupActive');
                     $(this).parent().append(area);
                     $(this).remove();
                 }
@@ -411,6 +464,7 @@ function mblock_add_item(element, item) {
                 iClone.find('option:selected').removeAttr("selected");
                 iClone.find('input:checked').removeAttr("checked");
                 iClone.find('select').each(function () {
+                    $(this).attr('data-selected', '');
                     if ($(this).attr('id') && ($(this).attr('id').indexOf("REX_MEDIALIST") >= 0
                             || $(this).attr('id').indexOf("REX_LINKLIST") >= 0
                         )) {
@@ -468,7 +522,7 @@ function mblock_set_count(element, item) {
 }
 
 function mblock_remove_item(element, item) {
-
+    mblock_module.executeRegisteredCallbacks('remove_item_start');
     if (element.data().hasOwnProperty('delete_confirm')) {
         if (!confirm(element.data('delete_confirm'))) {
             return false;
@@ -514,6 +568,7 @@ function mblock_moveup(element, item) {
         // set last user action
         mblock_module.lastAction = 'moveup';
         mblock_reindex(element);
+        mblock_remove(element);
     }, 150);
 }
 
@@ -535,6 +590,7 @@ function mblock_movedown(element, item) {
         // set last user action
         mblock_module.lastAction = 'movedown';
         mblock_reindex(element);
+        mblock_remove(element);
     }, 150);
 }
 
@@ -552,6 +608,8 @@ function mblock_scroll(element, item) {
 function mblock_add(element) {
     element.find('> div .addme').unbind().bind('click', function () {
         if (!$(this).prop('disabled')) {
+            $item = $(this).parents('.sortitem');
+            element.attr('data-mblock_clicked_add_item',$item.attr('data-mblock_index'));
             mblock_add_item(element, $(this).closest('div[class^="sortitem"]'));
         }
         return false;

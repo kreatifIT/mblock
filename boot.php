@@ -5,7 +5,11 @@
  * @license MIT
  */
 
+// we need the vendors
+include_once rex_path::addon('mblock', 'vendors/phpQuery/phpQuery.php');
+
 if (rex::isBackend() && is_object(rex::getUser())) {
+
     // check theme css is exists
     MBlockThemeHelper::themeBootCheck($this->getConfig('mblock_theme'));
 
@@ -17,8 +21,27 @@ if (rex::isBackend() && is_object(rex::getUser())) {
             rex_view::addCssFile($this->getAssetsUrl($css));
         }
     }
-    rex_view::addJsFile($this->getAssetsUrl('mblock_sortable.min.js?v=' . $this->getVersion()));
-    rex_view::addJsFile($this->getAssetsUrl('mblock_smooth_scroll.min.js?v=' . $this->getVersion()));
-    rex_view::addJsFile($this->getAssetsUrl('mblock.js?v=' . $this->getVersion()));
-    rex_view::addCssFile($this->getAssetsUrl('mblock.css?v=' . $this->getVersion()));
+
+    // register extensions
+    // alfred post post
+    rex_extension::register('REX_FORM_SAVED', function (rex_extension_point $params) {
+        /** @var rex_form|null $form */
+        $form = ($params->hasParam('form')) ? $params->getParam('form') : null;
+        if ($form instanceof mblock_rex_form)
+            return MBlockRexFormProcessor::postPostSaveAction($params->getSubject(), $form, $_POST); // execute post post
+        else
+            return $params->getSubject();
+    });
+
+    // assets
+    rex_view::addJsFile($this->getAssetsUrl('mblock_sortable.min.js'));
+    rex_view::addJsFile($this->getAssetsUrl('mblock_smooth_scroll.min.js'));
+    rex_view::addJsFile($this->getAssetsUrl('mblock.js'));
+    rex_view::addCssFile($this->getAssetsUrl('mblock.css'));
+
+}
+
+if (isset($_SESSION['mblock_count'])) {
+    // reset mblock page count
+    $_SESSION['mblock_count'] = 0;
 }

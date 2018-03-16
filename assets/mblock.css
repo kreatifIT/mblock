@@ -46,6 +46,10 @@ div.sortable-ghost {
     cursor: default;
 }
 
+.mblock_wrapper span.removeadded .btn .rex-icon {
+    margin: 0 !important;
+}
+
 .mblock_wrapper > div:after, .mblock_wrapper > div:before {
     content: "";
     display: table
@@ -63,4 +67,22 @@ div.sortable-ghost {
     -webkit-transition: opacity 249ms linear, top 149ms ease;
     -moz-transition: opacity 249ms linear, top 149ms ease;
     transition: opacity 249ms linear, top 149ms ease;
+}
+
+.panel.mblock-hidden-panel {
+    background: inherit;
+    border: inherit;
+    margin: inherit;
+}
+
+.hide_sorthandle .sorthandle,
+.hide_removeadded .removeadded {
+    display: none;
+}
+
+.mblock_wrapper.hide_sorthandle > div {
+    padding-left: 15px;
+}
+.mblock_wrapper.hide_removeadded > div {
+    padding-top: 15px;
 }

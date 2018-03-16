@@ -1,12 +1,18 @@
 <?php
-
 /**
- * User: joachimdoerr
- * Date: 27.02.17
- * Time: 14:37
+ * @author mail[at]joachim-doerr[dot]com Joachim Doerr
+ * @package redaxo5
+ * @license MIT
  */
+
 class MBlockCheckboxReplacer
 {
+    /**
+     * @param MBlockItem $item
+     * @param $count
+     * @return String
+     * @author Joachim Doerr
+     */
     public static function replaceCheckboxesBlockHolder(MBlockItem $item, $count)
     {
         // set phpquery document

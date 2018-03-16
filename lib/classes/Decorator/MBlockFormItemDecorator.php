@@ -1,8 +1,8 @@
 <?php
 /**
- * Author: Joachim Doerr
- * Date: 31.07.16
- * Time: 08:48
+ * @author mail[at]joachim-doerr[dot]com Joachim Doerr
+ * @package redaxo5
+ * @license MIT
  */
 
 class MBlockFormItemDecorator
@@ -65,6 +65,8 @@ class MBlockFormItemDecorator
                 self::replaceForId($document, $match, $item);
                 // replace attribute id
                 self::replaceName($match, $item);
+                // replace selected data
+                self::replaceSelectedData($match, $item);
                 // replace value by json key
                 if ($match->hasChildNodes()) {
                     /** @var DOMElement $child */
@@ -75,8 +77,10 @@ class MBlockFormItemDecorator
                                     self::replaceOptionSelect($match, $nodeChild, $item);
                                 break;
                             default:
-                                self::replaceOptionSelect($match, $child, $item);
-                                break;
+                                if($child->tagName) {
+                                    self::replaceOptionSelect($match, $child, $item);
+                                    break;
+                                }
                         }
                     }
                 }
@@ -131,6 +135,28 @@ class MBlockFormItemDecorator
                         // reset result
                         $item->setResult($result);
                     }
+                    break;
+            }
+        }
+    }
+
+    /**
+     * @param DOMElement $dom
+     * @param MBlockItem $item
+     * @author Joachim Doerr
+     */
+    protected static function replaceSelectedData(DOMElement $dom, MBlockItem $item)
+    {
+        // get value key by name
+        $matches = self::getName($dom);
+
+        // found
+        if ($matches) {
+            // node name switch
+            switch ($dom->nodeName) {
+                default:
+                case 'select':
+                    if ($matches && array_key_exists($matches[1], $item->getResult())) $dom->setAttribute('data-selected', $item->getResult()[$matches[1]]);
                     break;
             }
         }
