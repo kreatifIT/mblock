@@ -372,9 +372,7 @@ function mblock_reindex(element) {
     }
 
     mblock_module.executeRegisteredCallbacks('reindex_end');
-=======
     mblock_replace_for(element);
->>>>>>> 5253ebd20788f84528bc5e88de2ebadfa399b18e
 }
 
 function mblock_replace_for(element) {

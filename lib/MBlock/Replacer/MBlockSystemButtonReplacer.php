@@ -61,9 +61,6 @@ class MBlockSystemButtonReplacer
      */
     public static function replaceSystemButtons(MBlockItem $item, $count)
     {
-        // set phpquery document
-
-        $document = phpQuery::newDocumentHTML($item->getForm());
         // set dom document
         $dom = self::createDom($item->getForm());
         $item->addPayload('count-id', $count);
