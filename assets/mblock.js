@@ -313,7 +313,6 @@ function mblock_reindex(element) {
         });
     });
 
-<<<<<<< HEAD
     if (initredactor) {
 
         $('.redactor-box').each(function () {
