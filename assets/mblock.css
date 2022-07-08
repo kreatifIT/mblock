@@ -4,12 +4,12 @@
 }
 
 .mblock_wrapper > div {
-    border: 1px solid #bfe0d8;
-    background: #f1fcfa;
-    /*color: #1C94C4;*/
+    border: 1px solid rgba(100, 100, 100, 0.20);
+    background: rgba(255, 255, 255, 0.09);
     margin: 0 0 10px 0;
-    padding: 20px 15px 15px 25px;
-    position: relative
+    padding: 20px 15px 20px 25px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,.08);
 }
 
 .mblock_wrapper span.sorthandle {
@@ -20,7 +20,7 @@
     bottom: 5px;
     left: 4px;
     width: 8px;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAB3RJTUUH3wIDBycZ/Cj09AAAAAlwSFlzAAALEgAACxIB0t1+/AAAAARnQU1BAACxjwv8YQUAAAAWSURBVHjaY2DABhoaGupBGMRmYiAEAKo2BAFbROu9AAAAAElFTkSuQmCC)
+    border-left: dotted 2px #ccc; 
 }
 
 .mblock_wrapper span.sorthandle:hover {
@@ -36,6 +36,7 @@ div.sortable-ghost {
     position: absolute;
     right: 15px;
     top: 9px;
+    z-index: 1;
 }
 
 .mblock_wrapper span.removeadded .btn {
@@ -63,10 +64,8 @@ div.sortable-ghost {
     zoom: 1
 }
 
-.mblock_animate {
-    -webkit-transition: opacity 249ms linear, top 149ms ease;
-    -moz-transition: opacity 249ms linear, top 149ms ease;
-    transition: opacity 249ms linear, top 149ms ease;
+.plain_sortitem {
+    display: none;
 }
 
 .panel.mblock-hidden-panel {
@@ -83,6 +82,9 @@ div.sortable-ghost {
 .mblock_wrapper.hide_sorthandle > div {
     padding-left: 15px;
 }
+
 .mblock_wrapper.hide_removeadded > div {
     padding-top: 15px;
 }
+
+

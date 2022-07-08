@@ -34,10 +34,7 @@ mblock_example_description_base = Ejemplos que muestran cómo se pueden crear m�
 mblock_example_description_html = Los siguientes ejemplos muestran cómo, sin MForm, se pueden crear múltiples bloques dentro de un módulo.
 
 mblock_defaults = Ajustes
-mblock_delete = Eliminar contenido del formulario al duplicar bloques de datos
-mblock_not_delete = Transferir contenidos del formulario al duplicar bloques de datos
 mblock_theme_options = Opciones del tema
-mblock_delete_label = Contenido del formulario
 mblock_scroll = Desplazamiento habilitado
 mblock_not_scroll = Desplazamiento deshabilitado
 mblock_scroll_label = Desplazamiento suave
@@ -45,3 +42,8 @@ mblock_not_delete_confirm = Confirmación desactivada antes de eliminar bloques
 mblock_ok_delete_confirm = Confirmación activada antes de eliminar bloques
 mblock_delete_confirm_label = Confirmación antes de la eliminación
 mblock_delete_confirm = Eliminar bloque?
+
+mblock_rexform_demo = Demostración de RexForm MBlock
+rex_form_mblock_demo_entries = Entradas de demostración
+rex_form_mblock_demo_entries_add = Agregue una entrada de demostración
+rex_form_mblock_demo_entries_edit = Editar una entrada de demostración
