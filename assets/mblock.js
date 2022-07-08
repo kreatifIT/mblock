@@ -222,29 +222,6 @@ function mblock_reindex(element) {
                     });
                 }
             }
-
-            // input rex button
-            if ($(this).prop("nodeName") == 'INPUT' && $(this).attr('id') && (
-                    $(this).attr('id').indexOf("yform_MANAGER_DATANAME_") >= 0
-                )) {
-                if ($(this).attr('type') != 'hidden') {
-                    if ($(this).parent().data('eindex')) {
-                        eindex = $(this).parent().data('eindex');
-                    }
-                    $(this).attr('id', $(this).attr('id').replace(/\d+/, sindex + '00' + eindex));
-
-                    if ($(this).next().attr('type') == 'hidden') {
-                        $(this).next().attr('id', $(this).next().attr('id').replace(/\d+/, sindex + '00' + eindex));
-                    }
-
-                    // button
-                    $(this).parent().find('a.btn-popup').each(function () {
-                        if ($(this).attr('onclick')) {
-                            $(this).attr('onclick', $(this).attr('onclick').replace(/\(\d+/, '(' + sindex + '00' + eindex));
-                        }
-                    });
-                }
-            }
         });
 
         $(this).find('a[data-toggle="collapse"]').each(function (key) {
@@ -313,64 +290,6 @@ function mblock_reindex(element) {
         });
     });
 
-    if (initredactor) {
-
-        $('.redactor-box').each(function () {
-            var area;
-            var content = '';
-            $(this).find('div.redactor-in').each(function () {
-                if ($(this).attr('role')) {
-                    content = $(this).html();
-                }
-            });
-            $(this).find('textarea').each(function () {
-                var attr = $(this).attr('class');
-                if (typeof attr !== typeof undefined && attr !== false) {
-                    if ($(this).attr('class').indexOf("redactor") >= 0) {
-                        area = $(this).clone().css('display', 'block');
-                    }
-                }
-            });
-            if (typeof area === 'object') {
-                if (area.length) {
-                    $(this).parent().append(area);
-                    $(this).parent().find('textarea').val(content);
-                    $(this).remove();
-                }
-            }
-        });
-
-        if (typeof redactorInit === 'function') redactorInit();
-    }
-
-    if (initmarkitup) {
-
-        $('.markitup_markdown, .markitup_textile').each(function () {
-            var area;
-            $(this).find('textarea').each(function () {
-                area = $(this).clone();
-            });
-            if (typeof area === 'object') {
-                if (area.length) {
-                    area.removeClass('markItUpEditor').removeClass('markitupActive');
-                    $(this).parent().append(area);
-                    $(this).remove();
-                }
-            }
-        });
-
-        if (typeof markitupInit === 'function' && typeof autosize === 'function') {
-            markitupInit();
-            autosize($("textarea[class*=\'markitupEditor-\']"));
-        }
-
-    }
-    // if not removing, sets "for" attribute for most elements to make them work properly
-    if(mblock_module.lastAction != 'remove_item') {
-        mblock_replace_for(element);
-    }
-
-    mblock_module.executeRegisteredCallbacks('reindex_end');
     mblock_replace_for(element);
 }
 
@@ -386,9 +305,7 @@ function mblock_replace_for(element) {
                 if (!(id.indexOf("REX_MEDIA") >= 0 ||
                     id.indexOf("REX_LINK") >= 0 ||
                     id.indexOf("redactor") >= 0 ||
-                    id.indexOf("markitup") >= 0 ||
-                    id.indexOf("yform_MANAGER_DATA") >= 0 ||
-                    id.indexOf("yform_MANAGER_DATANAME") >= 0)
+                    id.indexOf("markitup") >= 0)
                 ) {
                     var label = mblock.find('label[for="' + id + '"]');
                     name = name.replace(/(\[|\])/gm, '');
@@ -428,16 +345,6 @@ function mblock_add_item(element, item) {
         item.after(iClone);
         // set count
         mblock_set_count(element, item);
-<<<<<<< HEAD
-        // set last user action
-        mblock_module.lastAction = 'add_item';
-        // reinit
-        mblock_init_sort(element);
-        // scroll to item
-        mblock_scroll(element, iClone);
-        element.trigger('mblock:add', [element]);
-=======
->>>>>>> 5253ebd20788f84528bc5e88de2ebadfa399b18e
     }
 
     // add unique id
@@ -499,11 +406,6 @@ function mblock_remove_item(element, item) {
         }
         // remove element
         item.remove();
-<<<<<<< HEAD
-        // set last user action
-        mblock_module.lastAction = 'remove_item';
-=======
->>>>>>> 5253ebd20788f84528bc5e88de2ebadfa399b18e
         // reinit
         mblock_init_sort(element);
         // scroll to item
@@ -520,10 +422,6 @@ function mblock_moveup(element, item) {
     setTimeout(function () {
         item.insertBefore(prev);
         // set last user action
-<<<<<<< HEAD
-        mblock_module.lastAction = 'moveup';
-=======
->>>>>>> 5253ebd20788f84528bc5e88de2ebadfa399b18e
         mblock_reindex(element);
         mblock_remove(element);
         // trigger event
@@ -540,10 +438,6 @@ function mblock_movedown(element, item) {
     setTimeout(function () {
         item.insertAfter(next);
         // set last user action
-<<<<<<< HEAD
-        mblock_module.lastAction = 'movedown';
-=======
->>>>>>> 5253ebd20788f84528bc5e88de2ebadfa399b18e
         mblock_reindex(element);
         mblock_remove(element);
         // trigger event
