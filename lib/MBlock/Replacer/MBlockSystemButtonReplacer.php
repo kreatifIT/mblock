@@ -40,8 +40,12 @@ class MBlockSystemButtonReplacer
                                 // add link art name
                                 $linkInfo = self::getLinkInfo($value);
                                 $child->setAttribute('value', $linkInfo['art_name']);
+                                // kreatif custom anchor support
+                                $child->parentNode->parentNode->setAttribute('data-anchor-value', $value);
                             } else {
                                 $child->setAttribute('value', $value);
+                                // kreatif custom anchor support
+                                $child->parentNode->parentNode->setAttribute('data-anchor-value', $value);
                             }
                             break;
                         }

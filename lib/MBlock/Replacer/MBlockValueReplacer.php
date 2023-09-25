@@ -34,6 +34,12 @@ class MBlockValueReplacer
                     default:
                         // replace value by json key
                         self::replaceValue($match, $item);
+
+                        // kreatif custom anchor support
+                        if ($match->parentNode->hasAttribute('data-anchor-value')) {
+                            $match->setAttribute('value', '');
+                            $match->parentNode->setAttribute('data-anchor-value', 0);
+                        }
                 }
             }
         }
