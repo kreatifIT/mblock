@@ -380,7 +380,7 @@ class MBlockSystemButtonReplacer
             foreach($dom->getElementsByTagName('a') as $child) {
                 if ($child->hasAttribute('onclick')) {
                     if (strpos($child->getAttribute('onclick'), $btnFindKey) !== false) {
-                        $child->setAttribute('onclick', preg_replace('/\\'.$searchPrefix.'\d\\'.$searchSuffix.'/', $prefix . $item->getPayload('count-id') . $_SESSION['mblock_count'] . '00' . $item->getPayload('replace-id') . $suffix, $child->getAttribute('onclick')));
+                        $child->setAttribute('onclick', preg_replace('/\\'.$searchPrefix.'\d+\\'.$searchSuffix.'/', $prefix . $item->getPayload('count-id') . $_SESSION['mblock_count'] . '00' . $item->getPayload('replace-id') . $suffix, $child->getAttribute('onclick')));
                     }
                 }
             }
