@@ -21,6 +21,7 @@ function mblock_init(element) {
         }
     }
     mblock_add_plus(element);
+    mblock_reindex(element);
 }
 
 // List with handle
